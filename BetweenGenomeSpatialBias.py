@@ -93,35 +93,29 @@ def read_brat_file(brat_in):
  
 def overlap_regions(strainList, bratDict, genomeLength):
     regionDict = {}
-    overlapCountTracker = []
+    shareTracker = []
     for strain in strainList:
         regionDict[strain] = region_mapper(genomeLength, bratDict[strain])
     for i, strain in enumerate(strainList):
         for j in range(i+1,len(strainList)):
-            edgeCounter = 0
+            totalReco = regionDict[strain].count(1) + regionDict[strainList[j]].count(1)
             overlapArray = [a*b for a,b in zip(regionDict[strain],regionDict[strainList[j]])]
-            for i in range(0, len(overlapArray)-1):
-                if overlapArray[i] != overlapArray[i+1]:
-                    edgeCounter += 1
-            overlapCount = int(edgeCounter/2.0 + .5)
-            overlapCountTracker.append(overlapCount)
-    return overlapCountTracker
+            proportionShared = float(overlapArray.count(1))/totalReco
+            shareTracker.append(proportionShared)
+    return shareTracker
 
 def overlap_regions_null(strainList, bratDict, genomeLength):
     regionDict = {}
-    overlapCountTracker = []
+    shareTracker = []
     for strain in strainList:
         regionDict[strain] = region_mapper_null(genomeLength, bratDict[strain])
     for i, strain in enumerate(strainList):
         for j in range(i+1,len(strainList)):
-            edgeCounter = 0
+            totalReco = regionDict[strain].count(1) + regionDict[strainList[j]].count(1)
             overlapArray = [a*b for a,b in zip(regionDict[strain],regionDict[strainList[j]])]
-            for i in range(0, len(overlapArray)-1):
-                if overlapArray[i] != overlapArray[i+1]:
-                    edgeCounter += 1
-            overlapCount = int(edgeCounter/2.0 + .5)
-            overlapCountTracker.append(overlapCount)
-    return overlapCountTracker
+            proportionShared = float(overlapArray.count(1))/totalReco
+            shareTracker.append(proportionShared)
+    return shareTracker
 
 def write_outfile(outfileName, overlapObserved, overlapNull):
     outFile = open(outfileName, 'w')

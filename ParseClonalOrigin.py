@@ -29,21 +29,29 @@ def readXML(inFileName, genomesList, genomeDict):
                     genomeDict[strainName] = [0]*6988209
                     genomesList.append(strainName)
         if 'Iteration' in child.tag:
+            geneBlockDict = {}
+            for k in genomeDict:
+                geneBlock = [0]*(blockStop - blockStart)
+                geneBlockDict[k] = geneBlock
             for gchild in child:
                 if 'recedge' in gchild.tag:
                     start = 0
                     stop = 0
                     for ggchild in gchild:
                         if 'start' in ggchild.tag:
-                            start = int(ggchild.text) + blockStart
+                            start = int(ggchild.text)
                         elif 'end' in ggchild.tag:
-                            stop = int(ggchild.text) + blockStop
+                            stop = int(ggchild.text)
                         elif 'eto' in ggchild.tag:
                             if int(ggchild.text) < len(genomesList):
                                 strainID = genomesList[int(ggchild.text)]
-                                genome = genomeDict[strainID]
-                                genome[start:stop] = [x+1 for x in genome[start:stop]]
-                                genomeDict[strainID] = genome
+                                geneBlockDict[strainID][start:stop] = [x+1 for x in geneBlockDict[strainID][start:stop]]
+            for s in genomeDict:
+                gene = geneBlockDict[s]
+                for i in range(len(gene)-1):
+                    if gene[i] > 0:
+                        gene[i] = 1    
+                genomeDict[s][blockStart:blockStop] = [sum(x) for x in zip(gene, genomeDict[s][blockStart:blockStop])]
     return (genomesList, genomeDict)
 
 
@@ -61,7 +69,7 @@ for filename in os.listdir('.'):
             print("Error in " + filename)
             continue
 
-outfile = open('clonalOriginResults.txt','w')
+outfile = open('clonalOriginResults2.txt','w')
 outfile.write("Position\t" + "\t".join(genomesList) + "\n")
 for i in range(0,6988209):
     outfile.write(str(i))

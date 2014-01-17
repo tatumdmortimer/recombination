@@ -10,14 +10,16 @@ import random
 
 def get_arguments(argv):
     if len(argv) == 0:
+        print "hey"
         usage()
         sys.exit(2)
     genomeLength = "none"
     program_in = "none"
     true_in = "none"
     clonalFrame = False
+    clonalOrigin = False
     try:
-        opts, args = getopt.getopt(argv, "t:p:g:c")
+        opts, args = getopt.getopt(argv, "t:p:g:co")
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -30,14 +32,17 @@ def get_arguments(argv):
             genomeLength = int(arg)
         elif opt == '-c':
             clonalFrame = True
-    return (genomeLength, program_in, true_in, clonalFrame)
+        elif opt == '-o':
+            clonalOrigin = True
+    return (genomeLength, program_in, true_in, clonalFrame, clonalOrigin)
 
 def usage():
     print "ProgramAccuracy.py\n \
         -t <True Regions File>\n \
         -p <Program Regions File>\n \
         -g <Genome Length>\n \
-        -c <optional flag for clonalframe>"
+        -c <optional flag for clonalframe>\n \
+        -o <optional flag for clonalorigin>"
 
 def region_mapper(genomeLength, regionList, numberLabel):
     genomeArray = [0]*genomeLength
@@ -63,16 +68,34 @@ def read_clonalFrame(inFileName):
     inFile = open(inFileName,'r')
     positionList = []
     probList = []
-    for line in inFile:
-        line = line.strip()
-        entries = line.split()
-        position = entries[1]
-        probability = float(entries[2])
-        positionList.append(position)
-        if probability > 0.75:
-            probList.append(2)
-        else: 
-            probList.append(0)
+    for i, line in enumerate(inFile):
+        if i >= 0:
+            line = line.strip()
+            entries = line.split()
+            position = entries[1]
+            probability = float(entries[2])
+            positionList.append(position)
+            if probability > 0.90:
+                probList.append(2)
+            else: 
+                probList.append(0)
+    return (positionList, probList)
+
+def read_clonalOrigin(inFileName):
+    inFile = open(inFileName, 'r')
+    positionList = []
+    probList = []
+    for i, line in enumerate(inFile):
+        if i > 0:
+            line = line.strip()
+            entries = line.split()
+            position = entries[0]
+            probability = int(entries[3])
+            positionList.append(position)
+            if probability > 90:
+                probList.append(2)
+            else:
+                probList.append(0)        
     return (positionList, probList)
  
 def overlap_regions(trueList, programList, genomeLength):
@@ -101,10 +124,39 @@ if "none" in get_arguments(sys.argv[1:]):
     usage()
     sys.exit(2)
 else:
-    genomeLength, program_in, true_in, clonalFrame = get_arguments(sys.argv[1:])
+    genomeLength, program_in, true_in, clonalFrame, clonalOrigin = get_arguments(sys.argv[1:])
 trueList = read_region_file(true_in)
 if clonalFrame:
     positionList, probList = read_clonalFrame(program_in)
+    trueGenome = region_mapper(genomeLength, trueList, 1)
+    print(len(trueGenome))
+    polyGenome = []
+    for item in positionList:
+        try:
+            polyGenome.append(trueGenome[int(item) - 1])
+        except IndexError:
+            print item
+    overlapArray = [a+b for a,b in zip(polyGenome, probList)]
+    falseNegative = 0
+    falsePositive = 0
+    truePositive = 0
+    trueNegative = 0
+    for pos in overlapArray:
+        if pos == 3:
+            truePositive += 1
+        elif pos == 2:
+            falsePositive += 1
+        elif pos == 1:
+            falseNegative += 1
+        elif pos == 0:
+            trueNegative += 1
+    print("True Positives: " + str(truePositive))
+    print("False Positives: " + str(falsePositive))
+    print("True Negatives: " + str(trueNegative))
+    print("False Negatives: " + str(falseNegative))
+
+elif clonalOrigin:
+    positionList, probList = read_clonalOrigin(program_in)
     trueGenome = region_mapper(genomeLength, trueList, 1)
     print(len(trueGenome))
     polyGenome = []
