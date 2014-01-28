@@ -31,14 +31,16 @@ def usage():
 
 def calc_shared(inFileName):
     """ Reads file and calculates the proportion of pairwise comparisons above
-        25% and 50% for observed and expected distributions"""
+        25%, 50%, 75% for observed and expected distributions"""
     inFile = open(inFileName, 'r')
-    observed25 = 0
-    observed50 = 0
-    observedTotal = 0
-    expected25 = 0
-    expected50 = 0
-    expectedTotal = 0
+    observed25 = 0.
+    observed50 = 0.
+    observed75 = 0.
+    observedTotal = 0.
+    expected25 = 0.
+    expected50 = 0.
+    expected75 = 0.
+    expectedTotal = 0.
     for i, line in enumerate(inFile):
         if i == 0:
             line = line.strip().split()
@@ -49,7 +51,9 @@ def calc_shared(inFileName):
                     observed25 += 1
                 if prop > .5:
                     observed50 += 1
-         elif i == 1:
+                if prop > .75:
+                    observed75 += 1
+        elif i == 1:
             line = line.strip().split()
             expectedTotal = len(line)
             for prop in line:
@@ -58,10 +62,14 @@ def calc_shared(inFileName):
                     expected25 += 1
                 if prop > .5:
                     expected50 += 1
-    print "Observed 25%: ", observed25
-    print "Expected 25%: ", expected25
-    print "Observed 50%: ", observed50
-    print "Expected 50%: ", expected50
+                if prop > .75:
+                    expected75 += 1
+    print "Observed 25%: ", observed25/observedTotal
+    print "Expected 25%: ", expected25/expectedTotal
+    print "Observed 50%: ", observed50/observedTotal
+    print "Expected 50%: ", expected50/expectedTotal
+    print "Observed 75%: ", observed75/observedTotal
+    print "Expected 75%: ", expected75/expectedTotal
 
 inFileName = get_arguments(sys.argv[1:])
 if inFileName is None:
