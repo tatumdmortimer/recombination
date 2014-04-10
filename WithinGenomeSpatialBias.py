@@ -72,7 +72,7 @@ def read_brat_file(brat_in):
             wordList = line.split()
             start = int(wordList[0])
             stop = int(wordList[1]) 
-            strain = wordList[3]
+            strain = wordList[2]
             if strain not in strainList:
                 strainList.append(strain)
                 bratDict[strain] = [[start,stop]]
@@ -86,6 +86,7 @@ def recomb_regions(windowTracker, strainList, bratDict, windowSize, windowStep):
     # region is in
     freqList = [0]*40
     nullList = [0]*40
+    outfile = open("nullDistribution.txt", 'w')
     for strain in strainList:
         updatedWindowTracker = windowTracker[:]
         events = 0
@@ -104,7 +105,9 @@ def recomb_regions(windowTracker, strainList, bratDict, windowSize, windowStep):
             counts = random_events(windowTracker, events)
             for windowCount in counts:
                 nullList[windowCount] += 1
-        
+            proportionZero = float(counts.count(0))/len(counts) 
+            outfile.write(str(proportionZero) + '\t')
+    outfile.close()
     return (freqList, nullList)
 
 def write_outfile(outfileName, freqList, nullList):
