@@ -113,7 +113,7 @@ def overlap_regions_null(strainList, bratDict, genomeLength):
         for j in range(i+1,len(strainList)):
             totalReco = regionDict[strain].count(1) + regionDict[strainList[j]].count(1)
             overlapArray = [a*b for a,b in zip(regionDict[strain],regionDict[strainList[j]])]
-            proportionShared = float(overlapArray.count(1))/totalReco
+            proportionShared = float(2*overlapArray.count(1))/totalReco
             shareTracker.append(proportionShared)
     return shareTracker
 

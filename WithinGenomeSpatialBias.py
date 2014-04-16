@@ -107,6 +107,7 @@ def recomb_regions(windowTracker, strainList, bratDict, windowSize, windowStep):
                 nullList[windowCount] += 1
             proportionZero = float(counts.count(0))/len(counts) 
             outfile.write(str(proportionZero) + '\t')
+        outfile.write('\n')
     outfile.close()
     return (freqList, nullList)
 

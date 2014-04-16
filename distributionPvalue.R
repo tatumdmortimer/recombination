@@ -2,8 +2,8 @@
 
 args <- commandArgs(TRUE)
 
-nullDist <- read.table(args[1], header = FALSE, nrow = 1)
+nullDist <- read.table(args[1], header = FALSE)
 
-null <- nullDist[1,]
-
+null <- colMeans(nullDist)
+summary(null)
 sum(null > args[2])/length(null)
