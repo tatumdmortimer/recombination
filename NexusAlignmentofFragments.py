@@ -68,7 +68,7 @@ for strain in strainList:
         start = region[0]
         stop = region[1]
         size = stop - start
-        if size > 1000:
+        if size > 100:
             outName = strain + '_' + str(start) + '_' + str(stop) + ".nex"
             AlignIO.write(align[:,start:stop], outName, 'nexus')
 

@@ -73,7 +73,8 @@ maxWidth = unit.pmax(g1$widths[2:3], g2$widths[2:3])
 
 g1$widths[2:3] <- maxWidth
 g2$widths[2:3] <- maxWidth
-tiff(file = "plot.tiff", width = 6.5, height = 2, units = "in", res = 300, compression = c("jpeg"))
+tiff(file = "plot.tiff", width = 6.5, height = 2, units = "in", res = 600,
+    compression = c("none"))
 grid.arrange(g1, g2, nrow = 2, ncol = 1)
 dev.off()
 
