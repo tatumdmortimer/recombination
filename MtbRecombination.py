@@ -37,14 +37,14 @@ def read_files(sharedSNPfileName, specificSNPfileName):
     specificSNPlist = []
     for line in sharedSNPfile:
         line = line.strip()
-        itemList = line.split()
-        SNP = itemList[2]
-        sharedSNPlist.append(int(SNP))
+        #itemList = line.split()
+        #SNP = itemList[2]
+        sharedSNPlist.append(int(line))
     for line in specificSNPfile:
         line = line.strip()
-        itemList = line.split()
-        SNP = itemList[2]
-        specificSNPlist.append(int(SNP))
+        #itemList = line.split()
+        #SNP = itemList[2]
+        specificSNPlist.append(int(line))
     return (sharedSNPlist, specificSNPlist)
 
 def find_fragments(sharedSNPlist, specificSNPlist):
