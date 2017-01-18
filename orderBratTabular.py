@@ -17,7 +17,7 @@ def is_file(filename):
 
 def get_args():
     """Parse command line arguments"""
-    parser = argparse.ArgumentParser(description='Orders BRATNextGen output')
+    parser = argparse.ArgumentParser(description="Orders BRATNextGen output by strain")
     parser.add_argument("bng", help="BRATNextGen output in tabular format",
         action=FullPaths, type=is_file)
     parser.add_argument("order", help="List of strains in desired order",
@@ -25,7 +25,7 @@ def get_args():
     return parser.parse_args()
 
 def read_brat_file(brat_in):
-    inFile = open(brat_in, 'r')
+    inFile = open(brat_in, "r")
     bratDict = {}
     strainList = []
     for index, line in enumerate(inFile):
@@ -43,8 +43,8 @@ def read_brat_file(brat_in):
     inFile.close()
     return (bratDict)
 
-def order_brat_file(brat_out):
-    orderFile = open(brat_out, 'r')
+def order_brat_file(strain_order):
+    orderFile = open(strain_order, "r")
     outFile = open("bratTabularOrdered.txt", "w")
     outFile.write("LIST OF FOREIGN GENOMIC SEGMENTS:\nStart\tEnd\tStrainName\n")
     for strain in orderFile:
