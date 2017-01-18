@@ -46,11 +46,11 @@ def read_brat_file(brat_in):
 def order_brat_file(brat_out):
     orderFile = open(brat_out, 'r')
     outFile = open("bratTabularOrdered.txt", "w")
-    outFile.write("{0}\t{1}\t{2}\n".format(start, stop, strain))
+    outFile.write("LIST OF FOREIGN GENOMIC SEGMENTS:\nStart\tEnd\tStrainName\n")
     for strain in orderFile:
         strain = strain.strip()
-        for start, stop in bratDict[strain]:
-            outFile.write("{0}\t{1}\t{2}\n".format(start, stop, strain))
+        for start, end in bratDict[strain]:
+            outFile.write("{0}\t{1}\t{2}\n".format(start, end, strain))
     orderFile.close()
 
 args = get_args()
